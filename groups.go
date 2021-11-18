@@ -126,6 +126,22 @@ func (c *Client) DeleteGroup(name string) error {
 	return nil
 }
 
+func (c *Client) UpdateGroup(g *Group) error {
+	name := g.ID
+	gg := group{*g}
+	req, err := c.NewRequest(http.MethodPut, "/group/"+name, gg)
+	if err != nil {
+		return err
+	}
+
+	_, err = c.Do(req, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (c *Client) AddGroupMember(group string, user string) error {
 	req, err := c.NewRequest(http.MethodPost, "/group/"+group, GroupOptions{Command: commandAddUser, User: user})
 	if err != nil {

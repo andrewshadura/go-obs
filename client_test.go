@@ -167,6 +167,31 @@ var _ = Describe("Client", func() {
 		})
 	})
 
+	Context("when a group is being updated", func() {
+		It("should return no error", func() {
+			server.AppendHandlers(
+				ghttp.CombineHandlers(
+					ghttp.VerifyRequest(http.MethodPut, "/group/foo"),
+					ghttp.VerifyBasicAuth(username, password),
+					ghttp.VerifyBody([]byte(`<group><title>foo</title><person><person userid="foo-member"></person><person userid="bar-member"></person><person userid="baz-member"></person></person></group>`)),
+					ghttp.RespondWith(http.StatusOK, `<status code="ok">
+							<summary>Ok</summary>
+						</status>`),
+				),
+			)
+			g := Group{
+				ID: "foo",
+				Members: []GroupMember{
+					{"foo-member"},
+					{"bar-member"},
+					{"baz-member"},
+				},
+			}
+			err := c.UpdateGroup(&g)
+			Expect(err).ToNot(HaveOccurred())
+		})
+	})
+
 	Context("when an existing group is being deleted", func() {
 		It("should return no error", func() {
 			server.AppendHandlers(
