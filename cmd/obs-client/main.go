@@ -81,10 +81,22 @@ func groupNewCmd(c *cli.Context) error {
 }
 
 func groupDeleteCmd(c *cli.Context) error {
-	err := client.DeleteGroup(c.Args().First())
+	group, err := client.GetGroup(c.Args().First())
+	if err != nil {
+		return fmt.Errorf("failed to retrieve group: %s", err)
+	}
+
+	group.Members = nil
+	err = client.UpdateGroup(group)
+	if err != nil {
+		return fmt.Errorf("failed to remove users from group: %s", err)
+	}
+
+	err = client.DeleteGroup(c.Args().First())
 	if err != nil {
 		return fmt.Errorf("failed to delete group: %s", err)
 	}
+
 	return nil
 }
 
