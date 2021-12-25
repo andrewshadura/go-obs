@@ -1,0 +1,25 @@
+lint-go:
+  stage: test
+  image: golangci/golangci-lint:v1.43
+  script:
+    - golangci-lint run -v
+
+test-go:
+  stage: test
+  image: golang:1.17-alpine
+  artifacts:
+    reports:
+      junit: junit*.xml
+  variables:
+    JUNIT_XML: junit.xml
+    # remove this when migrating to ginkgo v2:
+    ACK_GINKGO_DEPRECATIONS: 1.16.5
+  before_script:
+    - apk --no-cache add build-base
+    - go get -v github.com/onsi/ginkgo/ginkgo
+    - go get -v github.com/onsi/gomega
+    - go get -v -t ./...
+    - export PATH=$PATH:$HOME/go/bin
+  script:
+    - ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --cover --trace --race --progress -p
+
