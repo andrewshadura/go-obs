@@ -45,7 +45,7 @@ func CheckResponse(r *http.Response) error {
 
 		var raw ErrorResponse
 		if err := xml.Unmarshal(data, &raw); err != nil {
-			errorResponse.Message = "failed to parse unknown error format"
+			errorResponse.Message = fmt.Sprintf("failed to parse unknown error format: '%s'", data)
 		} else {
 			errorResponse.Message = raw.Message
 			errorResponse.Code = raw.Code
