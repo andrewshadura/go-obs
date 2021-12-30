@@ -6,6 +6,8 @@
 package obs
 
 import (
+	"encoding/json"
+	"encoding/xml"
 	"fmt"
 	"net/http"
 )
@@ -24,21 +26,44 @@ type UserOptions struct {
 }
 
 type WatchlistEntry struct {
-	Name string `xml:"name,attr"`
+	Name string `xml:"name,attr" json:"name"`
 }
 
-type UserOwner struct {
-	ID string `xml:"userid,attr"`
+type UserRef struct {
+	ID string `xml:"userid,attr" json:"username"`
+}
+
+func (u UserRef) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if u.ID == "" {
+		return nil
+	} else {
+		start.Attr = []xml.Attr{{
+			Name: xml.Name{
+				Space: "",
+				Local: "userid",
+			},
+			Value: u.ID,
+		}}
+		return e.EncodeElement("", start)
+	}
+}
+
+func (u UserRef) MarshalJSON() ([]byte, error) {
+	if u.ID == "" {
+		return json.Marshal(nil)
+	} else {
+		return json.Marshal(u.ID)
+	}
 }
 
 type User struct {
-	ID        string           `xml:"login"`
-	Email     string           `xml:"email"`
-	Realname  string           `xml:"realname"`
-	State     string           `xml:"state"`
-	Owner     *UserOwner       `xml:"owner,omitempty"`
-	Roles     []string         `xml:"globalrole,omitempty"`
-	Watchlist []WatchlistEntry `xml:"watchlist>project"`
+	ID        string           `xml:"login"                json:"username"`
+	Email     string           `xml:"email"                json:"email"`
+	Realname  string           `xml:"realname"             json:"realname"`
+	State     string           `xml:"state"                json:"state"`
+	Owner     *UserRef         `xml:"owner,omitempty"      json:"owner,omitempty"`
+	Roles     []string         `xml:"globalrole,omitempty" json:"globalrole,omitempty"`
+	Watchlist []WatchlistEntry `xml:"watchlist>project"    json:"watchlist,omitempty"`
 }
 
 type person struct {

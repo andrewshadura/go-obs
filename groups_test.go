@@ -38,7 +38,7 @@ var _ = Describe("Marshalling", func() {
 		It("should produce a valid XML", func() {
 			g := group{Group{
 				ID: "foo",
-				Members: []GroupMember{
+				Members: []UserRef{
 					{"foo-member"},
 					{"bar-member"},
 					{"baz-member"},

@@ -6,10 +6,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/url"
 	"os"
+	"reflect"
 	"strings"
 
 	"github.com/andrewshadura/go-obs"
@@ -21,12 +23,27 @@ var (
 	client *obs.Client
 )
 
+func formatOutput(c *cli.Context, data interface{}) {
+	if c.Bool("json") {
+		jsonOutput, _ := json.MarshalIndent(data, "", "\t")
+		fmt.Printf("%s\n", jsonOutput)
+	} else {
+		v := reflect.ValueOf(data)
+		switch v.Kind() {
+		case reflect.Array, reflect.Slice:
+			fmt.Println(strings.Join(v.Interface().([]string), "\n"))
+		case reflect.Interface, reflect.Ptr:
+			fmt.Printf("%#v\n", v.Interface())
+		}
+	}
+}
+
 func userListCmd(c *cli.Context) error {
 	users, err := client.GetUsers("")
 	if err != nil {
 		return fmt.Errorf("failed to list users: %s", err)
 	}
-	fmt.Print(strings.Join(users, "\n"))
+	formatOutput(c, users)
 	return nil
 }
 
@@ -35,7 +52,7 @@ func userGetCmd(c *cli.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to retrieve user: %s", err)
 	}
-	fmt.Printf("%#v\n", user)
+	formatOutput(c, user)
 	return nil
 }
 
@@ -44,7 +61,7 @@ func userLookupCmd(c *cli.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to look up user: %s", err)
 	}
-	fmt.Printf("%#v\n", user)
+	formatOutput(c, user)
 	return nil
 }
 
@@ -53,7 +70,7 @@ func groupListCmd(c *cli.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to retrieve groups: %s", err)
 	}
-	fmt.Print(strings.Join(groups, "\n"))
+	formatOutput(c, groups)
 	return nil
 }
 
@@ -62,7 +79,7 @@ func groupGetCmd(c *cli.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to retrieve group: %s", err)
 	}
-	fmt.Printf("%#v\n", group)
+	formatOutput(c, group)
 	return nil
 }
 
@@ -76,7 +93,7 @@ func groupNewCmd(c *cli.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to retrieve group after its creation: %s", err)
 	}
-	fmt.Printf("%#v\n", group)
+	formatOutput(c, group)
 	return nil
 }
 
@@ -155,6 +172,11 @@ func main() {
 				Name:  "use-keyring",
 				Value: true,
 				Usage: "Use keyring for passwords",
+			},
+			&cli.BoolFlag{
+				Name:  "json",
+				Value: false,
+				Usage: "Output results in JSON",
 			},
 		},
 		Commands: []*cli.Command{

@@ -6,7 +6,6 @@
 package obs
 
 import (
-	"encoding/xml"
 	"net/http"
 )
 
@@ -16,30 +15,11 @@ const (
 	commandSetEmail   = "set_email"
 )
 
-type GroupMember struct {
-	Username string `xml:"userid,attr"`
-}
-
 type Group struct {
-	ID         string        `xml:"title"`
-	Email      string        `xml:"email,omitempty"`
-	Maintainer GroupMember   `xml:"maintainer"`
-	Members    []GroupMember `xml:"person>person"`
-}
-
-func (g GroupMember) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if g.Username == "" {
-		return nil
-	} else {
-		start.Attr = []xml.Attr{{
-			Name: xml.Name{
-				Space: "",
-				Local: "userid",
-			},
-			Value: g.Username,
-		}}
-		return e.EncodeElement("", start)
-	}
+	ID         string    `xml:"title"           json:"name"`
+	Email      string    `xml:"email,omitempty" json:"email,omitempty"`
+	Maintainer UserRef   `xml:"maintainer"      json:"maintainer"`
+	Members    []UserRef `xml:"person>person"   json:"members"`
 }
 
 type group struct {

@@ -92,7 +92,7 @@ var _ = Describe("Client", func() {
 			)
 			g, err := c.GetGroup("foo")
 			Expect(err).ToNot(HaveOccurred())
-			Expect(g.Members).To(Equal([]GroupMember{
+			Expect(g.Members).To(Equal([]UserRef{
 				{"foo-member"},
 				{"bar-member"},
 				{"baz-member"},
@@ -181,7 +181,7 @@ var _ = Describe("Client", func() {
 			)
 			g := Group{
 				ID: "foo",
-				Members: []GroupMember{
+				Members: []UserRef{
 					{"foo-member"},
 					{"bar-member"},
 					{"baz-member"},
@@ -241,6 +241,5 @@ var _ = Describe("Client", func() {
 			Expect(err).ToNot(HaveOccurred())
 		})
 	})
-
 
 })
