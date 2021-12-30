@@ -10,6 +10,19 @@ import (
 	"net/http"
 )
 
+const (
+	commandChangePassword = "change_password" //nolint
+	commandLockUser       = "lock"
+	commandDeleteUser     = "delete"
+)
+
+type UserOptions struct {
+	Command string `url:"cmd,omitempty"`
+	User    string `url:"userid,omitempty"`
+	Email   string `url:"email,omitempty"`
+	Prefix  string `url:"prefix,omitempty"`
+}
+
 type WatchlistEntry struct {
 	Name string `xml:"name,attr"`
 }
@@ -49,10 +62,6 @@ func (c *Client) GetUser(name string) (*User, error) {
 	}
 
 	return &u.User, nil
-}
-
-type UserOptions struct {
-	Prefix string `url:"prefix,omitempty"`
 }
 
 func (c *Client) GetUsers(prefix string) ([]string, error) {
@@ -110,4 +119,32 @@ func (c *Client) GetUserByEmail(email string) (*User, error) {
 	}
 
 	return &users[0], nil
+}
+
+func (c *Client) LockUser(name string) error {
+	req, err := c.NewRequest(http.MethodPost, "/person/"+name, UserOptions{Command: commandLockUser, User: name})
+	if err != nil {
+		return err
+	}
+
+	_, err = c.Do(req, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *Client) DeleteUser(name string) error {
+	req, err := c.NewRequest(http.MethodPost, "/person/"+name, UserOptions{Command: commandDeleteUser, User: name})
+	if err != nil {
+		return err
+	}
+
+	_, err = c.Do(req, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

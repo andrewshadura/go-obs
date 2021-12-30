@@ -54,12 +54,6 @@ type directory struct {
 	Entries []directoryEntry `xml:"entry"`
 }
 
-type GroupOptions struct {
-	Command string `url:"cmd,omitempty"`
-	User    string `url:"userid,omitempty"`
-	Email   string `url:"email,omitempty"`
-}
-
 func (c *Client) GetGroups() ([]string, error) {
 	req, err := c.NewRequest(http.MethodGet, "/group", nil)
 	if err != nil {
@@ -143,7 +137,7 @@ func (c *Client) UpdateGroup(g *Group) error {
 }
 
 func (c *Client) AddGroupMember(group string, user string) error {
-	req, err := c.NewRequest(http.MethodPost, "/group/"+group, GroupOptions{Command: commandAddUser, User: user})
+	req, err := c.NewRequest(http.MethodPost, "/group/"+group, UserOptions{Command: commandAddUser, User: user})
 	if err != nil {
 		return err
 	}
@@ -157,7 +151,7 @@ func (c *Client) AddGroupMember(group string, user string) error {
 }
 
 func (c *Client) RemoveGroupMember(group string, user string) error {
-	req, err := c.NewRequest(http.MethodPost, "/group/"+group, GroupOptions{Command: commandRemoveUser, User: user})
+	req, err := c.NewRequest(http.MethodPost, "/group/"+group, UserOptions{Command: commandRemoveUser, User: user})
 	if err != nil {
 		return err
 	}
@@ -171,7 +165,7 @@ func (c *Client) RemoveGroupMember(group string, user string) error {
 }
 
 func (c *Client) SetGroupEmail(group string, email string) error {
-	req, err := c.NewRequest(http.MethodPost, "/group/"+group, GroupOptions{Command: commandSetEmail, Email: email})
+	req, err := c.NewRequest(http.MethodPost, "/group/"+group, UserOptions{Command: commandSetEmail, Email: email})
 	if err != nil {
 		return err
 	}
