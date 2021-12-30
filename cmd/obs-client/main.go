@@ -39,7 +39,11 @@ func formatOutput(c *cli.Context, data interface{}) {
 }
 
 func userListCmd(c *cli.Context) error {
-	users, err := client.GetUsers("")
+	prefix := ""
+	if c.NArg() > 0 {
+		prefix = c.Args().First()
+	}
+	users, err := client.GetUsers(prefix)
 	if err != nil {
 		return fmt.Errorf("failed to list users: %s", err)
 	}
@@ -185,9 +189,10 @@ func main() {
 				Usage: "Manipulate users",
 				Subcommands: []*cli.Command{
 					&cli.Command{
-						Name:   "list",
-						Usage:  "List all users",
-						Action: userListCmd,
+						Name:      "list",
+						Usage:     "List all users with username starting with PREFIX",
+						Action:    userListCmd,
+						ArgsUsage: "[PREFIX]",
 					},
 					&cli.Command{
 						Name:      "get",
