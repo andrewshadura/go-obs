@@ -16,7 +16,7 @@ import (
 var _ = Describe("Marshalling", func() {
 	Context("when a user profile is marshalled", func() {
 		It("should produce a valid XML", func() {
-			d := person{User{
+			d := User{
 				ID:       "user",
 				Email:    "user@host.co.uk",
 				Realname: "User Person",
@@ -25,7 +25,7 @@ var _ = Describe("Marshalling", func() {
 					{"project-1"},
 					{"project-2"},
 				},
-			}}
+			}
 			data, err := xml.Marshal(d)
 			Expect(err).ToNot(HaveOccurred())
 			Expect(string(data)).To(Equal(Unindent(`

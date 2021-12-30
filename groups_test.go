@@ -36,13 +36,13 @@ var _ = Describe("Marshalling", func() {
 
 	Context("when a group object is marshalled", func() {
 		It("should produce a valid XML", func() {
-			g := group{Group{
+			g := Group{
 				ID: "foo",
 				Members: []UserRef{
 					{"foo-member"},
 					{"bar-member"},
 					{"baz-member"},
-				}},
+				},
 			}
 			data, err := xml.Marshal(g)
 			Expect(err).ToNot(HaveOccurred())

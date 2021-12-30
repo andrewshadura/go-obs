@@ -57,6 +57,7 @@ func (u UserRef) MarshalJSON() ([]byte, error) {
 }
 
 type User struct {
+	XMLName   xml.Name         `xml:"person"               json:"-"`
 	ID        string           `xml:"login"                json:"username"`
 	Email     string           `xml:"email"                json:"email"`
 	Realname  string           `xml:"realname"             json:"realname"`
@@ -64,10 +65,6 @@ type User struct {
 	Owner     *UserRef         `xml:"owner,omitempty"      json:"owner,omitempty"`
 	Roles     []string         `xml:"globalrole,omitempty" json:"globalrole,omitempty"`
 	Watchlist []WatchlistEntry `xml:"watchlist>project"    json:"watchlist,omitempty"`
-}
-
-type person struct {
-	User
 }
 
 type collection struct {
@@ -80,13 +77,13 @@ func (c *Client) GetUser(name string) (*User, error) {
 		return nil, err
 	}
 
-	var u person
+	var u User
 	_, err = c.Do(req, &u)
 	if err != nil {
 		return nil, err
 	}
 
-	return &u.User, nil
+	return &u, nil
 }
 
 func (c *Client) GetUsers(prefix string) ([]string, error) {

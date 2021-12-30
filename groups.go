@@ -6,6 +6,7 @@
 package obs
 
 import (
+	"encoding/xml"
 	"net/http"
 )
 
@@ -16,14 +17,11 @@ const (
 )
 
 type Group struct {
+	XMLName    xml.Name  `xml:"group"           json:"-"`
 	ID         string    `xml:"title"           json:"name"`
 	Email      string    `xml:"email,omitempty" json:"email,omitempty"`
 	Maintainer UserRef   `xml:"maintainer"      json:"maintainer"`
 	Members    []UserRef `xml:"person>person"   json:"members"`
-}
-
-type group struct {
-	Group
 }
 
 type directoryEntry struct {
@@ -60,19 +58,19 @@ func (c *Client) GetGroup(name string) (*Group, error) {
 		return nil, err
 	}
 
-	var g group
+	var g Group
 	_, err = c.Do(req, &g)
 	if err != nil {
 		return nil, err
 	}
 
-	return &g.Group, nil
+	return &g, nil
 }
 
 func (c *Client) NewGroup(name string) error {
-	newGroup := group{Group{
+	newGroup := Group{
 		ID: name,
-	}}
+	}
 	req, err := c.NewRequest(http.MethodPut, "/group/"+name, newGroup)
 	if err != nil {
 		return err
@@ -102,8 +100,7 @@ func (c *Client) DeleteGroup(name string) error {
 
 func (c *Client) UpdateGroup(g *Group) error {
 	name := g.ID
-	gg := group{*g}
-	req, err := c.NewRequest(http.MethodPut, "/group/"+name, gg)
+	req, err := c.NewRequest(http.MethodPut, "/group/"+name, g)
 	if err != nil {
 		return err
 	}
