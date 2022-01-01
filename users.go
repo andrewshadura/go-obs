@@ -1,5 +1,5 @@
-// Copyright (C) 2021, Andrej Shadura
-// Copyright (C) 2021, Collabora Limited
+// Copyright (C) 2021, 2022 Andrej Shadura
+// Copyright (C) 2021, 2022 Collabora Limited
 //
 // SPDX-License-Identifier: Apache-2.0
 
@@ -29,6 +29,8 @@ type WatchlistEntry struct {
 	Name string `xml:"name,attr" json:"name"`
 }
 
+// UserRef represents a user referred by their username.
+// This is used e.g. to represent members of a group.
 type UserRef struct {
 	ID string `xml:"userid,attr" json:"username"`
 }
@@ -56,6 +58,7 @@ func (u UserRef) MarshalJSON() ([]byte, error) {
 	}
 }
 
+// User represents a user (a person in OBS terminology)
 type User struct {
 	XMLName   xml.Name         `xml:"person"               json:"-"`
 	ID        string           `xml:"login"                json:"username"`
@@ -71,6 +74,7 @@ type collection struct {
 	Users []User `xml:"person"`
 }
 
+// GetUser retrieves the details of the user (email, real name etc).
 func (c *Client) GetUser(name string) (*User, error) {
 	req, err := c.NewRequest(http.MethodGet, "/person/"+name, nil)
 	if err != nil {
@@ -86,6 +90,8 @@ func (c *Client) GetUser(name string) (*User, error) {
 	return &u, nil
 }
 
+// ListUsers gets a list of names of all users.
+// Use GetUser to retrieve the details of each user.
 func (c *Client) ListUsers(prefix string) ([]string, error) {
 	req, err := c.NewRequest(http.MethodGet, "/person", UserOptions{Prefix: prefix})
 	if err != nil {
@@ -110,6 +116,7 @@ type SearchOptions struct {
 	Match string `url:"match,omitempty"`
 }
 
+// GetUsersByEmail returns the details of the users matching given email address
 func (c *Client) GetUsersByEmail(email string) ([]User, error) {
 	match := XPathAttrEquals("email", email).String()
 	req, err := c.NewRequest(http.MethodGet, "/search/person", SearchOptions{Match: match})
@@ -126,6 +133,8 @@ func (c *Client) GetUsersByEmail(email string) ([]User, error) {
 	return results.Users, nil
 }
 
+// GetUserByEmail returns the details of the only user matching given email address
+// If more than one user with given email address exist, an error is returned.
 func (c *Client) GetUserByEmail(email string) (*User, error) {
 	users, err := c.GetUsersByEmail(email)
 	if err != nil {
@@ -143,6 +152,7 @@ func (c *Client) GetUserByEmail(email string) (*User, error) {
 	return &users[0], nil
 }
 
+// LockUser locks the user and their projects
 func (c *Client) LockUser(name string) error {
 	req, err := c.NewRequest(http.MethodPost, "/person/"+name, UserOptions{Command: commandLockUser, User: name})
 	if err != nil {
@@ -157,6 +167,7 @@ func (c *Client) LockUser(name string) error {
 	return nil
 }
 
+// DeleteUser marks the user as deleted and deletes their projects
 func (c *Client) DeleteUser(name string) error {
 	req, err := c.NewRequest(http.MethodPost, "/person/"+name, UserOptions{Command: commandDeleteUser, User: name})
 	if err != nil {
