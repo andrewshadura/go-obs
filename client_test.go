@@ -124,7 +124,7 @@ var _ = Describe("Client", func() {
 			u, err := c.GetUserByEmail("foo@bar.org")
 			Expect(err).ToNot(HaveOccurred())
 			Expect(u.ID).To(Equal("foo-member"))
-			Expect(u.Watchlist).To(Equal([]WatchlistEntry{
+			Expect(u.Watchlist).To(Equal([]ProjectRef{
 				{"project-1"},
 				{"project-2"},
 			}))

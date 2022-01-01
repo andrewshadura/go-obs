@@ -21,7 +21,7 @@ var _ = Describe("Marshalling", func() {
 				Email:    "user@host.co.uk",
 				Realname: "User Person",
 				State:    "confirmed",
-				Watchlist: []WatchlistEntry{
+				Watchlist: []ProjectRef{
 					{"project-1"},
 					{"project-2"},
 				},

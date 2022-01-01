@@ -25,10 +25,6 @@ type UserOptions struct {
 	Prefix  string `url:"prefix,omitempty"`
 }
 
-type WatchlistEntry struct {
-	Name string `xml:"name,attr" json:"name"`
-}
-
 // UserRef represents a user referred by their username.
 // This is used e.g. to represent members of a group.
 type UserRef struct {
@@ -60,14 +56,14 @@ func (u UserRef) MarshalJSON() ([]byte, error) {
 
 // User represents a user (a person in OBS terminology)
 type User struct {
-	XMLName   xml.Name         `xml:"person"               json:"-"`
-	ID        string           `xml:"login"                json:"username"`
-	Email     string           `xml:"email"                json:"email"`
-	Realname  string           `xml:"realname"             json:"realname"`
-	State     string           `xml:"state"                json:"state"`
-	Owner     *UserRef         `xml:"owner,omitempty"      json:"owner,omitempty"`
-	Roles     []string         `xml:"globalrole,omitempty" json:"globalrole,omitempty"`
-	Watchlist []WatchlistEntry `xml:"watchlist>project"    json:"watchlist,omitempty"`
+	XMLName   xml.Name     `xml:"person"               json:"-"`
+	ID        string       `xml:"login"                json:"username"`
+	Email     string       `xml:"email"                json:"email"`
+	Realname  string       `xml:"realname"             json:"realname"`
+	State     string       `xml:"state"                json:"state"`
+	Owner     *UserRef     `xml:"owner,omitempty"      json:"owner,omitempty"`
+	Roles     []string     `xml:"globalrole,omitempty" json:"globalrole,omitempty"`
+	Watchlist []ProjectRef `xml:"watchlist>project"    json:"watchlist,omitempty"`
 }
 
 type collection struct {
