@@ -43,7 +43,7 @@ func userListCmd(c *cli.Context) error {
 	if c.NArg() > 0 {
 		prefix = c.Args().First()
 	}
-	users, err := client.GetUsers(prefix)
+	users, err := client.ListUsers(prefix)
 	if err != nil {
 		return fmt.Errorf("failed to list users: %s", err)
 	}
@@ -70,7 +70,7 @@ func userLookupCmd(c *cli.Context) error {
 }
 
 func groupListCmd(c *cli.Context) error {
-	groups, err := client.GetGroups()
+	groups, err := client.ListGroups()
 	if err != nil {
 		return fmt.Errorf("failed to retrieve groups: %s", err)
 	}

@@ -42,7 +42,7 @@ var _ = Describe("Client", func() {
 					ghttp.RespondWithJSONEncoded(http.StatusOK, "foo"),
 				),
 			)
-			gg, err := c.GetGroups()
+			gg, err := c.ListGroups()
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("EOF"))
 			Expect(gg).To(BeNil())
@@ -63,7 +63,7 @@ var _ = Describe("Client", func() {
 						</directory>`),
 				),
 			)
-			gg, err := c.GetGroups()
+			gg, err := c.ListGroups()
 			Expect(err).ToNot(HaveOccurred())
 			Expect(gg).To(Equal([]string{
 				"foo",

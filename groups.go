@@ -32,7 +32,7 @@ type directory struct {
 	Entries []directoryEntry `xml:"entry"`
 }
 
-func (c *Client) GetGroups() ([]string, error) {
+func (c *Client) ListGroups() ([]string, error) {
 	req, err := c.NewRequest(http.MethodGet, "/group", nil)
 	if err != nil {
 		return nil, err

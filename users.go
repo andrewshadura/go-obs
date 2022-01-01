@@ -86,7 +86,7 @@ func (c *Client) GetUser(name string) (*User, error) {
 	return &u, nil
 }
 
-func (c *Client) GetUsers(prefix string) ([]string, error) {
+func (c *Client) ListUsers(prefix string) ([]string, error) {
 	req, err := c.NewRequest(http.MethodGet, "/person", UserOptions{Prefix: prefix})
 	if err != nil {
 		return nil, err
