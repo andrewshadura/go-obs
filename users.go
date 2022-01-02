@@ -177,3 +177,24 @@ func (c *Client) DeleteUser(name string) error {
 
 	return nil
 }
+
+// GetUserGroups retrieves a list of groups the user is a member of
+func (c *Client) GetUserGroups(name string) ([]string, error) {
+	req, err := c.NewRequest(http.MethodGet, "/person/"+name+"/group", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var dir directory
+	_, err = c.Do(req, &dir)
+	if err != nil {
+		return nil, err
+	}
+
+	var groups []string
+	for _, g := range dir.Entries {
+		groups = append(groups, g.Name)
+	}
+
+	return groups, nil
+}

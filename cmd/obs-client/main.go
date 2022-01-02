@@ -84,6 +84,15 @@ func groupListCmd(c *cli.Context) error {
 	return nil
 }
 
+func userGetGroupsCmd(c *cli.Context) error {
+	groups, err := client.GetUserGroups(c.Args().First())
+	if err != nil {
+		return fmt.Errorf("failed to retrieve user's groups: %s", err)
+	}
+	formatOutput(c, groups)
+	return nil
+}
+
 func groupGetCmd(c *cli.Context) error {
 	group, err := client.GetGroup(c.Args().First())
 	if err != nil {
@@ -211,6 +220,12 @@ func main() {
 						Usage:     "Lookup users by email",
 						Action:    userLookupCmd,
 						ArgsUsage: "EMAIL",
+					},
+					&cli.Command{
+						Name:      "groups",
+						Usage:     "List groups of a user",
+						Action:    userGetGroupsCmd,
+						ArgsUsage: "USERNAME",
 					},
 				},
 			},
