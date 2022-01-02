@@ -67,7 +67,7 @@ func userGetCmd(c *cli.Context) error {
 }
 
 func userLookupCmd(c *cli.Context) error {
-	user, err := client.GetUserByEmail(c.Args().First())
+	user, err := client.GetUsersByEmail(c.Args().First())
 	if err != nil {
 		return fmt.Errorf("failed to look up user: %s", err)
 	}
@@ -208,7 +208,7 @@ func main() {
 					},
 					&cli.Command{
 						Name:      "lookup",
-						Usage:     "Lookup user by email",
+						Usage:     "Lookup users by email",
 						Action:    userLookupCmd,
 						ArgsUsage: "EMAIL",
 					},
