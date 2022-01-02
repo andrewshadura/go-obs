@@ -28,10 +28,16 @@ func formatOutput(c *cli.Context, data interface{}) {
 		jsonOutput, _ := json.MarshalIndent(data, "", "\t")
 		fmt.Printf("%s\n", jsonOutput)
 	} else {
-		v := reflect.ValueOf(data)
-		switch v.Kind() {
+		switch v := reflect.ValueOf(data); v.Kind() {
 		case reflect.Array, reflect.Slice:
-			fmt.Println(strings.Join(v.Interface().([]string), "\n"))
+			switch v.Index(0).Kind() {
+				case reflect.String:
+					fmt.Println(strings.Join(v.Interface().([]string), "\n"))
+				default:
+					for i := 0; i < v.Len(); i++ {
+						fmt.Printf("%#v\n", v.Index(i))
+					}
+				}
 		case reflect.Interface, reflect.Ptr:
 			fmt.Printf("%#v\n", v.Interface())
 		}
