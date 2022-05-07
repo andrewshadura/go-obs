@@ -10,16 +10,13 @@ test-go:
   artifacts:
     reports:
       junit: junit*.xml
-  variables:
-    JUNIT_XML: junit.xml
-    # remove this when migrating to ginkgo v2:
-    ACK_GINKGO_DEPRECATIONS: 1.16.5
   before_script:
     - apk --no-cache add build-base
-    - go get -v github.com/onsi/ginkgo/ginkgo
+    - go get -v github.com/onsi/ginkgo/v2
+    - go install -mod=mod github.com/onsi/ginkgo/v2/ginkgo
     - go get -v github.com/onsi/gomega
     - go get -v -t ./...
     - export PATH=$PATH:$HOME/go/bin
   script:
-    - ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --cover --trace --race --progress -p
+    - ginkgo -r --randomize-all --randomize-suites --fail-on-pending --cover --trace --race --progress -p --junit-report=junit.xml
 
