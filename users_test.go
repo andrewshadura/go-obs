@@ -108,4 +108,22 @@ var _ = Describe("Users", func() {
 		})
 	})
 
+	When("password for user foodbar is being changed", func() {
+		It("should return user for this email and no error", func() {
+			server.AppendHandlers(
+				ghttp.CombineHandlers(
+					ghttp.VerifyRequest(http.MethodPost, "/person/foobar", "cmd=change_password"),
+					ghttp.VerifyBody([]byte("drosswap")),
+					ghttp.VerifyBasicAuth(username, password),
+					ghttp.RespondWith(http.StatusOK, `
+						<status code="ok">
+							<summary>Ok</summary>
+						</status>`),
+				),
+			)
+			err := c.SetUserPassword("foobar", "drosswap")
+			Expect(err).ToNot(HaveOccurred())
+		})
+	})
+
 })
