@@ -163,6 +163,21 @@ func (c *Client) LockUser(name string) error {
 	return nil
 }
 
+// SetUserPassword sets the password of the user
+func (c *Client) SetUserPassword(name string, password string) error {
+	req, err := c.NewRequest(http.MethodPost, "/person/"+name, UserOptions{Command: commandChangePassword}, password)
+	if err != nil {
+		return err
+	}
+
+	_, err = c.Do(req, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // DeleteUser marks the user as deleted and deletes their projects
 func (c *Client) DeleteUser(name string) error {
 	req, err := c.NewRequest(http.MethodPost, "/person/"+name, UserOptions{Command: commandDeleteUser}, nil)
