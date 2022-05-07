@@ -150,7 +150,7 @@ func (c *Client) GetUserByEmail(email string) (*User, error) {
 
 // LockUser locks the user and their projects
 func (c *Client) LockUser(name string) error {
-	req, err := c.NewRequest(http.MethodPost, "/person/"+name, UserOptions{Command: commandLockUser, User: name})
+	req, err := c.NewRequest(http.MethodPost, "/person/"+name, UserOptions{Command: commandLockUser})
 	if err != nil {
 		return err
 	}
@@ -165,7 +165,7 @@ func (c *Client) LockUser(name string) error {
 
 // DeleteUser marks the user as deleted and deletes their projects
 func (c *Client) DeleteUser(name string) error {
-	req, err := c.NewRequest(http.MethodPost, "/person/"+name, UserOptions{Command: commandDeleteUser, User: name})
+	req, err := c.NewRequest(http.MethodPost, "/person/"+name, UserOptions{Command: commandDeleteUser}, nil)
 	if err != nil {
 		return err
 	}
