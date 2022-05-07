@@ -36,7 +36,7 @@ type directory struct {
 // ListGroups gets a list of names of all groups.
 // Use GetGroup to retrieve the details of each group.
 func (c *Client) ListGroups() ([]string, error) {
-	req, err := c.NewRequest(http.MethodGet, "/group", nil)
+	req, err := c.NewRequest(http.MethodGet, "/group", nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (c *Client) ListGroups() ([]string, error) {
 
 // GetGroup retrieves the details of the group (maintainer, members etc).
 func (c *Client) GetGroup(name string) (*Group, error) {
-	req, err := c.NewRequest(http.MethodGet, "/group/"+name, nil)
+	req, err := c.NewRequest(http.MethodGet, "/group/"+name, nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func (c *Client) NewGroup(name string) error {
 	newGroup := Group{
 		ID: name,
 	}
-	req, err := c.NewRequest(http.MethodPut, "/group/"+name, newGroup)
+	req, err := c.NewRequest(http.MethodPut, "/group/"+name, nil, newGroup)
 	if err != nil {
 		return err
 	}
@@ -92,7 +92,7 @@ func (c *Client) NewGroup(name string) error {
 // DeleteGroup deletes a group of users.
 // On some OBS versions the group must be empty before it can be deleted.
 func (c *Client) DeleteGroup(name string) error {
-	req, err := c.NewRequest(http.MethodDelete, "/group/"+name, nil)
+	req, err := c.NewRequest(http.MethodDelete, "/group/"+name, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -110,7 +110,7 @@ func (c *Client) DeleteGroup(name string) error {
 // perform this call.
 func (c *Client) UpdateGroup(g *Group) error {
 	name := g.ID
-	req, err := c.NewRequest(http.MethodPut, "/group/"+name, g)
+	req, err := c.NewRequest(http.MethodPut, "/group/"+name, nil, g)
 	if err != nil {
 		return err
 	}
@@ -125,7 +125,7 @@ func (c *Client) UpdateGroup(g *Group) error {
 
 // AddGroupMember adds a user to a group.
 func (c *Client) AddGroupMember(group string, user string) error {
-	req, err := c.NewRequest(http.MethodPost, "/group/"+group, UserOptions{Command: commandAddUser, User: user})
+	req, err := c.NewRequest(http.MethodPost, "/group/"+group, UserOptions{Command: commandAddUser, User: user}, nil)
 	if err != nil {
 		return err
 	}
@@ -140,7 +140,7 @@ func (c *Client) AddGroupMember(group string, user string) error {
 
 // RemoveGroupMember removes a user from a group.
 func (c *Client) RemoveGroupMember(group string, user string) error {
-	req, err := c.NewRequest(http.MethodPost, "/group/"+group, UserOptions{Command: commandRemoveUser, User: user})
+	req, err := c.NewRequest(http.MethodPost, "/group/"+group, UserOptions{Command: commandRemoveUser, User: user}, nil)
 	if err != nil {
 		return err
 	}
@@ -155,7 +155,7 @@ func (c *Client) RemoveGroupMember(group string, user string) error {
 
 // SetGroupEmail sets the email address of a group
 func (c *Client) SetGroupEmail(group string, email string) error {
-	req, err := c.NewRequest(http.MethodPost, "/group/"+group, UserOptions{Command: commandSetEmail, Email: email})
+	req, err := c.NewRequest(http.MethodPost, "/group/"+group, UserOptions{Command: commandSetEmail, Email: email}, nil)
 	if err != nil {
 		return err
 	}

@@ -72,7 +72,7 @@ type collection struct {
 
 // GetUser retrieves the details of the user (email, real name etc).
 func (c *Client) GetUser(name string) (*User, error) {
-	req, err := c.NewRequest(http.MethodGet, "/person/"+name, nil)
+	req, err := c.NewRequest(http.MethodGet, "/person/"+name, nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +89,7 @@ func (c *Client) GetUser(name string) (*User, error) {
 // ListUsers gets a list of names of all users.
 // Use GetUser to retrieve the details of each user.
 func (c *Client) ListUsers(prefix string) ([]string, error) {
-	req, err := c.NewRequest(http.MethodGet, "/person", UserOptions{Prefix: prefix})
+	req, err := c.NewRequest(http.MethodGet, "/person", UserOptions{Prefix: prefix}, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +115,7 @@ type SearchOptions struct {
 // GetUsersByEmail returns the details of the users matching given email address
 func (c *Client) GetUsersByEmail(email string) ([]User, error) {
 	match := XPathAttrEquals("email", email).String()
-	req, err := c.NewRequest(http.MethodGet, "/search/person", SearchOptions{Match: match})
+	req, err := c.NewRequest(http.MethodGet, "/search/person", SearchOptions{Match: match}, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -150,7 +150,7 @@ func (c *Client) GetUserByEmail(email string) (*User, error) {
 
 // LockUser locks the user and their projects
 func (c *Client) LockUser(name string) error {
-	req, err := c.NewRequest(http.MethodPost, "/person/"+name, UserOptions{Command: commandLockUser})
+	req, err := c.NewRequest(http.MethodPost, "/person/"+name, UserOptions{Command: commandLockUser}, nil)
 	if err != nil {
 		return err
 	}
@@ -180,7 +180,7 @@ func (c *Client) DeleteUser(name string) error {
 
 // GetUserGroups retrieves a list of groups the user is a member of
 func (c *Client) GetUserGroups(name string) ([]string, error) {
-	req, err := c.NewRequest(http.MethodGet, "/person/"+name+"/group", nil)
+	req, err := c.NewRequest(http.MethodGet, "/person/"+name+"/group", nil, nil)
 	if err != nil {
 		return nil, err
 	}

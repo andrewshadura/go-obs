@@ -106,7 +106,7 @@ func (c *Client) setBaseURL(urlStr string) error {
 // path, in which case it is resolved relative to the base URL of the Client.
 // If specified, the value pointed to by body is XML-encoded and included as
 // the request body.
-func (c *Client) NewRequest(method, path string, opt interface{}) (*http.Request, error) {
+func (c *Client) NewRequest(method, path string, opt interface{}, body interface{}) (*http.Request, error) {
 	u := *c.baseURL
 
 	u.Path = c.baseURL.Path + path
@@ -119,19 +119,21 @@ func (c *Client) NewRequest(method, path string, opt interface{}) (*http.Request
 	}
 
 	var bodyReader io.Reader
-	var err error
-	switch {
-	case method == http.MethodPut:
-		reqHeaders.Set("content-type", "application/xml")
+	if body != nil {
+		switch body := body.(type) {
+		case string:
+			bodyReader = bytes.NewReader([]byte(body))
 
-		if opt != nil {
-			body, err := xml.Marshal(opt)
+		case interface{}:
+			xml, err := xml.Marshal(body)
 			if err != nil {
 				return nil, err
 			}
-			bodyReader = bytes.NewReader(body)
+			bodyReader = bytes.NewReader(xml)
 		}
-	case opt != nil:
+	}
+
+	if opt != nil {
 		q, err := query.Values(opt)
 		if err != nil {
 			return nil, err
