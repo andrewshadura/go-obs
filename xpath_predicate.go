@@ -26,7 +26,7 @@ func XPathAttrEquals(name string, value string) *XPathPredicate {
 func (p *XPathPredicate) String() string {
 	if strings.ContainsAny(p.value, "'") {
 		return p.path + p.operator + "\"" + p.value + "\""
-	} else {
-		return p.path + p.operator + "'" + p.value + "'"
 	}
+
+	return p.path + p.operator + "'" + p.value + "'"
 }

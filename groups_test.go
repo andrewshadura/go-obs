@@ -115,7 +115,6 @@ var _ = Describe("Groups", func() {
 				}))
 			})
 		})
-
 	})
 
 	When("group 'foo' is requested", func() {

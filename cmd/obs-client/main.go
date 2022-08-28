@@ -19,9 +19,7 @@ import (
 	"github.com/zalando/go-keyring"
 )
 
-var (
-	client *obs.Client
-)
+var client *obs.Client
 
 func formatOutput(c *cli.Context, data interface{}) {
 	if c.Bool("json") {
@@ -31,13 +29,13 @@ func formatOutput(c *cli.Context, data interface{}) {
 		switch v := reflect.ValueOf(data); v.Kind() {
 		case reflect.Array, reflect.Slice:
 			switch v.Index(0).Kind() {
-				case reflect.String:
-					fmt.Println(strings.Join(v.Interface().([]string), "\n"))
-				default:
-					for i := 0; i < v.Len(); i++ {
-						fmt.Printf("%#v\n", v.Index(i))
-					}
+			case reflect.String:
+				fmt.Println(strings.Join(v.Interface().([]string), "\n"))
+			default:
+				for i := 0; i < v.Len(); i++ {
+					fmt.Printf("%#v\n", v.Index(i))
 				}
+			}
 		case reflect.Interface, reflect.Ptr:
 			fmt.Printf("%#v\n", v.Interface())
 		}
@@ -49,11 +47,14 @@ func userListCmd(c *cli.Context) error {
 	if c.NArg() > 0 {
 		prefix = c.Args().First()
 	}
+
 	users, err := client.ListUsers(prefix)
 	if err != nil {
 		return fmt.Errorf("failed to list users: %s", err)
 	}
+
 	formatOutput(c, users)
+
 	return nil
 }
 
@@ -62,7 +63,9 @@ func userGetCmd(c *cli.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to retrieve user: %s", err)
 	}
+
 	formatOutput(c, user)
+
 	return nil
 }
 
@@ -71,7 +74,9 @@ func userLookupCmd(c *cli.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to look up user: %s", err)
 	}
+
 	formatOutput(c, user)
+
 	return nil
 }
 
@@ -80,7 +85,9 @@ func groupListCmd(c *cli.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to retrieve groups: %s", err)
 	}
+
 	formatOutput(c, groups)
+
 	return nil
 }
 
@@ -89,7 +96,9 @@ func userGetGroupsCmd(c *cli.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to retrieve user's groups: %s", err)
 	}
+
 	formatOutput(c, groups)
+
 	return nil
 }
 
@@ -98,7 +107,9 @@ func groupGetCmd(c *cli.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to retrieve group: %s", err)
 	}
+
 	formatOutput(c, group)
+
 	return nil
 }
 
@@ -112,7 +123,9 @@ func groupNewCmd(c *cli.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to retrieve group after its creation: %s", err)
 	}
+
 	formatOutput(c, group)
+
 	return nil
 }
 
@@ -123,6 +136,7 @@ func groupDeleteCmd(c *cli.Context) error {
 	}
 
 	group.Members = nil
+
 	err = client.UpdateGroup(group)
 	if err != nil {
 		return fmt.Errorf("failed to remove users from group: %s", err)
@@ -141,6 +155,7 @@ func groupAddCmd(c *cli.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to add user %s to group %s: %s", c.Args().Get(0), c.Args().Get(1), err)
 	}
+
 	return nil
 }
 
@@ -149,6 +164,7 @@ func groupRemoveCmd(c *cli.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to remove user %s from group %s: %s", c.Args().Get(0), c.Args().Get(1), err)
 	}
+
 	return nil
 }
 
@@ -161,6 +177,7 @@ func (u *urlFlag) Set(value string) error {
 	if err == nil {
 		u.Url = *parsed
 	}
+
 	return err
 }
 
@@ -179,7 +196,7 @@ func parseUrlFlag(value string) *urlFlag {
 
 func main() {
 	app := &cli.App{
-		Usage: "OBS API command-line client",
+		Usage:                "OBS API command-line client",
 		EnableBashCompletion: true,
 		Flags: []cli.Flag{
 			&cli.GenericFlag{
@@ -199,29 +216,29 @@ func main() {
 			},
 		},
 		Commands: []*cli.Command{
-			&cli.Command{
+			{
 				Name:  "user",
 				Usage: "Manipulate users",
 				Subcommands: []*cli.Command{
-					&cli.Command{
+					{
 						Name:      "list",
 						Usage:     "List all users with username starting with PREFIX",
 						Action:    userListCmd,
 						ArgsUsage: "[PREFIX]",
 					},
-					&cli.Command{
+					{
 						Name:      "get",
 						Usage:     "Get a user by username",
 						Action:    userGetCmd,
 						ArgsUsage: "USERNAME",
 					},
-					&cli.Command{
+					{
 						Name:      "lookup",
 						Usage:     "Lookup users by email",
 						Action:    userLookupCmd,
 						ArgsUsage: "EMAIL",
 					},
-					&cli.Command{
+					{
 						Name:      "groups",
 						Usage:     "List groups of a user",
 						Action:    userGetGroupsCmd,
@@ -229,36 +246,36 @@ func main() {
 					},
 				},
 			},
-			&cli.Command{
+			{
 				Name:  "group",
 				Usage: "Manipulate groups",
 				Subcommands: []*cli.Command{
-					&cli.Command{
+					{
 						Name:   "list",
 						Usage:  "List all groups",
 						Action: groupListCmd,
 					},
-					&cli.Command{
+					{
 						Name:   "new",
 						Usage:  "Create a new group",
 						Action: groupNewCmd,
 					},
-					&cli.Command{
+					{
 						Name:   "get",
 						Usage:  "Get a group by its name",
 						Action: groupGetCmd,
 					},
-					&cli.Command{
+					{
 						Name:   "delete",
 						Usage:  "Delete a group",
 						Action: groupDeleteCmd,
 					},
-					&cli.Command{
+					{
 						Name:   "add",
 						Usage:  "Add a user to a group",
 						Action: groupAddCmd,
 					},
-					&cli.Command{
+					{
 						Name:   "remove",
 						Usage:  "Remove a user from a group",
 						Action: groupRemoveCmd,
@@ -286,7 +303,6 @@ func main() {
 				if err != nil {
 					log.Fatalf("failed to create client: %s", err)
 				}
-
 			}
 			return nil
 		},

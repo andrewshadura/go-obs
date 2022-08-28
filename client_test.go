@@ -41,5 +41,4 @@ var _ = Describe("Client", func() {
 		server.Close()
 		_ = c
 	})
-
 })

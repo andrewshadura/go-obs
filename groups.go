@@ -16,7 +16,7 @@ const (
 	commandSetEmail   = "set_email"
 )
 
-// Group represents a named group of users
+// Group represents a named group of users.
 type Group struct {
 	XMLName    xml.Name  `xml:"group"           json:"-"`
 	ID         string    `xml:"title"           json:"name"`
@@ -42,6 +42,7 @@ func (c *Client) ListGroups() ([]string, error) {
 	}
 
 	var dir directory
+
 	_, err = c.Do(req, &dir)
 	if err != nil {
 		return nil, err
@@ -153,7 +154,7 @@ func (c *Client) RemoveGroupMember(group string, user string) error {
 	return nil
 }
 
-// SetGroupEmail sets the email address of a group
+// SetGroupEmail sets the email address of a group.
 func (c *Client) SetGroupEmail(group string, email string) error {
 	req, err := c.NewRequest(http.MethodPost, "/group/"+group, UserOptions{Command: commandSetEmail, Email: email}, nil)
 	if err != nil {

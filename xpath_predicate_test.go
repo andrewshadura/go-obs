@@ -24,5 +24,4 @@ var _ = Describe("Escaping according to XPath rules", func() {
 			Expect(p.String()).To(Equal("@key=\"va'lue\""))
 		})
 	})
-
 })

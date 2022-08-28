@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	commandChangePassword = "change_password" //nolint
+	commandChangePassword = "change_password"
 	commandLockUser       = "lock"
 	commandDeleteUser     = "delete"
 )
@@ -54,7 +54,7 @@ func (u UserRef) MarshalJSON() ([]byte, error) {
 	}
 }
 
-// User represents a user (a person in OBS terminology)
+// User represents a user (a person in OBS terminology).
 type User struct {
 	XMLName   xml.Name     `xml:"person"               json:"-"`
 	ID        string       `xml:"login"                json:"username"`
@@ -112,7 +112,7 @@ type SearchOptions struct {
 	Match string `url:"match,omitempty"`
 }
 
-// GetUsersByEmail returns the details of the users matching given email address
+// GetUsersByEmail returns the details of the users matching given email address.
 func (c *Client) GetUsersByEmail(email string) ([]User, error) {
 	match := XPathAttrEquals("email", email).String()
 	req, err := c.NewRequest(http.MethodGet, "/search/person", SearchOptions{Match: match}, nil)
@@ -148,7 +148,7 @@ func (c *Client) GetUserByEmail(email string) (*User, error) {
 	return &users[0], nil
 }
 
-// LockUser locks the user and their projects
+// LockUser locks the user and their projects.
 func (c *Client) LockUser(name string) error {
 	req, err := c.NewRequest(http.MethodPost, "/person/"+name, UserOptions{Command: commandLockUser}, nil)
 	if err != nil {
@@ -163,7 +163,7 @@ func (c *Client) LockUser(name string) error {
 	return nil
 }
 
-// SetUserPassword sets the password of the user
+// SetUserPassword sets the password of the user.
 func (c *Client) SetUserPassword(name string, password string) error {
 	req, err := c.NewRequest(http.MethodPost, "/person/"+name, UserOptions{Command: commandChangePassword}, password)
 	if err != nil {
@@ -178,7 +178,7 @@ func (c *Client) SetUserPassword(name string, password string) error {
 	return nil
 }
 
-// DeleteUser marks the user as deleted and deletes their projects
+// DeleteUser marks the user as deleted and deletes their projects.
 func (c *Client) DeleteUser(name string) error {
 	req, err := c.NewRequest(http.MethodPost, "/person/"+name, UserOptions{Command: commandDeleteUser}, nil)
 	if err != nil {
@@ -193,7 +193,7 @@ func (c *Client) DeleteUser(name string) error {
 	return nil
 }
 
-// GetUserGroups retrieves a list of groups the user is a member of
+// GetUserGroups retrieves a list of groups the user is a member of.
 func (c *Client) GetUserGroups(name string) ([]string, error) {
 	req, err := c.NewRequest(http.MethodGet, "/person/"+name+"/group", nil, nil)
 	if err != nil {

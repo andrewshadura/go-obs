@@ -76,6 +76,7 @@ func newClient(options ...ClientOptionFunc) (*Client, error) {
 		if fn == nil {
 			continue
 		}
+
 		if err := fn(c); err != nil {
 			return nil, err
 		}
@@ -119,6 +120,7 @@ func (c *Client) NewRequest(method, path string, opt interface{}, body interface
 	}
 
 	var bodyReader io.Reader
+
 	if body != nil {
 		switch body := body.(type) {
 		case string:
