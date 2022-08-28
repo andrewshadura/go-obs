@@ -18,12 +18,12 @@ const (
 )
 
 func unindent(s string) string {
-        lines := strings.Split(s, "\n")
-        output := strings.Builder{}
-        for _, l := range lines {
-                output.WriteString(strings.TrimLeft(l, " \t"))
-        }
-        return output.String()
+	lines := strings.Split(s, "\n")
+	output := strings.Builder{}
+	for _, l := range lines {
+		output.WriteString(strings.TrimLeft(l, " \t"))
+	}
+	return output.String()
 }
 
 var _ = Describe("Client", func() {
