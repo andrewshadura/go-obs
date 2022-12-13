@@ -108,7 +108,33 @@ var _ = Describe("Users", func() {
 		})
 	})
 
-	When("password for user foodbar is being changed", func() {
+	When("confirmed users are being looked up", func() {
+		It("should return no error", func() {
+			server.AppendHandlers(
+				ghttp.CombineHandlers(
+					ghttp.VerifyRequest(http.MethodGet, "/search/person", "match=@state='confirmed'"),
+					ghttp.VerifyBasicAuth(username, password),
+					ghttp.RespondWith(http.StatusOK, `
+						<collection matches="0">
+							<person>
+									<login>foo-member</login>
+									<email>foo@bar.org</email>
+									<realname>Foo Bar</realname>
+									<state>confirmed</state>
+							</person>
+						</collection>`),
+				),
+			)
+			uu, err := c.LookupUsers("state", "confirmed")
+			Expect(err).ToNot(HaveOccurred())
+			Expect(uu[0]).ToNot(BeNil())
+			Expect(uu[0].ID).To(Equal("foo-member"))
+		})
+	})
+
+
+
+	When("password for user foobar is being changed", func() {
 		It("should return user for this email and no error", func() {
 			server.AppendHandlers(
 				ghttp.CombineHandlers(

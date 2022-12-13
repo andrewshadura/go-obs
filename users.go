@@ -108,6 +108,23 @@ func (c *Client) ListUsers(prefix string) ([]string, error) {
 	return users, nil
 }
 
+// LookupUsers gets a list of all users with matching value of an attribute.
+func (c *Client) LookupUsers(attribute string, value string) ([]User, error) {
+	match := XPathAttrEquals(attribute, value).String()
+	req, err := c.NewRequest(http.MethodGet, "/search/person", SearchOptions{Match: match}, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var results collection
+	_, err = c.Do(req, &results)
+	if err != nil {
+		return nil, err
+	}
+
+	return results.Users, nil
+}
+
 type SearchOptions struct {
 	Match string `url:"match,omitempty"`
 }
