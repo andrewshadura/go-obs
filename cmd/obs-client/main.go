@@ -91,6 +91,20 @@ func groupListCmd(c *cli.Context) error {
 	return nil
 }
 
+func userLockCmd(c *cli.Context) error {
+	name := c.Args().First()
+	if name == "" {
+		return fmt.Errorf("username is required")
+	}
+
+	err := client.LockUser(name)
+	if err != nil {
+		return fmt.Errorf("failed to lock user %s: %s", name, err)
+	}
+
+	return nil
+}
+
 func userGetGroupsCmd(c *cli.Context) error {
 	groups, err := client.GetUserGroups(c.Args().First())
 	if err != nil {
@@ -242,6 +256,12 @@ func main() {
 						Name:      "groups",
 						Usage:     "List groups of a user",
 						Action:    userGetGroupsCmd,
+						ArgsUsage: "USERNAME",
+					},
+					{
+						Name:      "lock",
+						Usage:     "Lock a user and their projects",
+						Action:    userLockCmd,
 						ArgsUsage: "USERNAME",
 					},
 				},
